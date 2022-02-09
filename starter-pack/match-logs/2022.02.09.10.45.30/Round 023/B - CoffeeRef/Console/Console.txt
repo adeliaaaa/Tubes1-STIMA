@@ -1,0 +1,10 @@
+======================================================================================================
+round:23
+player: id:2 position: y:4 x:78 speed:3 state:ACCELERATING statesThatOccurredThisRound:ACCELERATING boosting:false boost-counter:0 damage:4 score:-15 powerups: BOOST:1, LIZARD:1
+opponent: id:1 position: y:2 x:91 speed:0
+
+[░░░░░░░░▓░░░░░░░░░▓░░░»░░░]
+[░░░░░░░░░░▓▓▓░░░░░1░░░░░░░]
+[░░░░*░░░Φ░░░░░░░░░░T░░»░░░]
+[░░░░░2░░░░░░░░░#░∱▓░░░░░»░]
+======================================================================================================

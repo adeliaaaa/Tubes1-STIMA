@@ -1,0 +1,10 @@
+======================================================================================================
+round:92
+player: id:2 position: y:4 x:425 speed:0 state:HIT_WALL statesThatOccurredThisRound:ACCELERATING, HIT_MUD, HIT_WALL boosting:false boost-counter:0 damage:5 score:4 powerups: OIL:7, EMP:3, TWEET:2
+opponent: id:1 position: y:2 x:114 speed:0
+
+[░░░░#T░░░░░░░░░»░░░░░░▓░░░]
+[░T░░∱░Φ░░░T░░░░*░░░░░░░░░▓]
+[░░░░░░░░░▓░░░*░░░░░░░░*░░░]
+[░░░▓#2░░▓░░░░░░∱░░∱░░░░░░░]
+======================================================================================================

@@ -1,0 +1,6 @@
+Match seed: 683294
+
+The winner is: B - CoffeeRef
+
+A - Brendan - score:-3 health:0
+B - CoffeeRef - score:0 health:0
