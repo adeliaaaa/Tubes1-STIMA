@@ -1,3 +1,0 @@
-Command: TURN_LEFT
-Execution time: 8ms
-Exception: null

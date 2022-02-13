@@ -1,3 +1,0 @@
-Command: FIX
-Execution time: 16ms
-Exception: null

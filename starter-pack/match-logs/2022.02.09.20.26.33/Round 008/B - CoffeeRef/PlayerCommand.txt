@@ -1,3 +1,0 @@
-Command: USE_OIL
-Execution time: 9ms
-Exception: null
