@@ -25,6 +25,7 @@ public class Bot {
     private final static Command BOOST = new BoostCommand();
     private final static Command EMP = new EmpCommand();
     private final static Command FIX = new FixCommand();
+    private final static Command NOTHING = new DoNothingCommand();
 
     private final static Command TURN_RIGHT = new ChangeLaneCommand(1);
     private final static Command TURN_LEFT = new ChangeLaneCommand(-1);
@@ -56,56 +57,34 @@ public class Bot {
             rightBlocks = getBlocksInFront(myCar.position.lane+1, myCar.position.block);
         }
 
-        /*
-        if (myCar.damage >= 5) {
-            return new FixCommand();
-        }
-        if (blocks.contains(Terrain.MUD)) {
-            int i = random.nextInt(directionList.size());
-            return new ChangeLaneCommand(directionList.get(i));
-        }
-        return new AccelerateCommand(); */
-        	/*
-    	kalau ada power up langsung diambil
-    	ambil jalan yang tidak ada halangan
-    	kalau speedcar < 6 gunakan boost
-    	Kalau ada mobil di belakang sejauh 2/1 block
-    	Oil
-    	Emp
-    	Kalo ada mobil di depan
-    	Lizard
-    	Kalo ada rintangan di depan sama di serong kanan/kiri
-    	Tweet
-    	Kalo musuh udah 5 di depan kita
-    	Kalo ada rintangan di paling kiri atau paling kanan, kasih tweet di sebelah rintangannya
-    	Accelerate
-    	Kalau damagecar > 2 tidak pakai accelerate , kalau tidak pakai
-
-
-	Decelerate: think again
-    	Fix
-    	Kalau damage >= 3 gunakan fix
-    	Nothing
-    	Turn Left
-    	Kalau misal di lane 2,3,4 dan kalau ada obstacle didepan sejauh 1 block
-    	Turn Right
-    	Kalau misal di lane 1,2,3 dan kalau ada obstacle didepan sejauh 1 block
-        */
-
-        // Written by ME :
-        List<Object> nextBlock = blocks.subList(1,myCar.speed+2);
+        List<Object> nextBlock = blocks.subList(1,myCar.speed+1);
         List<Object> nextLeft = null;
         List<Object> nextRight = null;
 
         if (leftBlocks != null) {
-            nextLeft = leftBlocks.subList(0,myCar.speed+2);
+            nextLeft = leftBlocks.subList(0,myCar.speed+1);
         }
         if (rightBlocks != null) {
-            nextRight = rightBlocks.subList(0,myCar.speed+2);
+            nextRight = rightBlocks.subList(0,myCar.speed+1);
         }
 
+        //Fix first if too damaged to move so speed can be consistent
+        if(myCar.damage >= 3) {
+            return FIX;
+        }
+        
+        // jika stuck di belakang player lain
+        if (stuckbehindplayer(myCar, opponent)) {
+            if (hasPowerUp(PowerUps.EMP, myCar.powerups)) {
+                return EMP;
+            }
+            else if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                return LIZARD;
+            }
+        } 
+
         // ambil jalan yang tidak ada halangan
-        if (nextBlock.contains(Terrain.MUD) || nextBlock.contains(Terrain.OIL_SPILL) || nextBlock.contains(Terrain.WALL)) {
+        if (nextBlock.contains(Terrain.MUD) || nextBlock.contains(Terrain.OIL_SPILL) || nextBlock.contains(Terrain.WALL) || stuckbehindplayer(myCar, opponent)) {
             // Kalau punya lizard langsung dipakai
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
@@ -126,17 +105,58 @@ public class Bot {
                     return TURN_RIGHT;
                 }
                 else {
-                    Random num = new Random();
-                    int low = 0;
-                    int high = 1;
-                    int res = num.nextInt(high-low) + low;
-                    if (res == 0) {
+                    int leftObstacle = occurences(nextLeft);
+                    int rightObstacle = occurences(nextRight);
+                    int laneObstacle = occurences(nextBlock);
+                    if (laneObstacle < leftObstacle && laneObstacle < rightObstacle) {
+                        return NOTHING;
+                    }
+                    else if (leftObstacle > rightObstacle) {
+                        return TURN_RIGHT;
+                    }
+                    else if (leftObstacle < rightObstacle) {
                         return TURN_LEFT;
                     }
                     else {
-                        return TURN_RIGHT;
+                        Random num = new Random();
+                        int low = 0;
+                        int high = 1;
+                        int res = num.nextInt(high-low) + low;
+                        if (res == 0) {
+                            return TURN_LEFT;
+                        }
+                        else {
+                            return TURN_RIGHT;
+                        }
                     }
                 }
+            }
+        }
+
+        // menggunakan boost jika speed mobil player lebih kecil 5
+        if (myCar.speed <= 5){
+            if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+                return BOOST;
+            }
+        }
+
+        // Batas aman kondisi damage dan speed myCar
+
+        //menggunakan emp jika ada opponet didepan kita dan lane yang sama
+        if (opponent.position.lane == myCar.position.lane && opponent.position.block > myCar.position.block){
+            if (hasPowerUp(PowerUps.EMP, myCar.powerups)) {
+                return EMP;
+            }
+        }
+
+        if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+            return new TweetCommand(opponent.position.lane , (opponent.position.block + opponent.speed+1));
+        }
+
+        //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
+        if (opponent.position.lane == myCar.position.lane && myCar.position.block  - opponent.position.block <= 3 && myCar.position.block > opponent.position.block){
+            if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
+                return OIL;
             }
         }
         
@@ -171,6 +191,24 @@ public class Bot {
             }
         }
         return false;
+    }
+
+    // mengembalikan jumlah mud dan oil_spill di block yang akan dilewati
+    private int occurences(List obstacles){
+        int amountobstacle = 0;
+        amountobstacle += Collections.frequency(obstacles, Terrain.MUD);
+        amountobstacle += Collections.frequency(obstacles, Terrain.OIL_SPILL);
+        return amountobstacle;
+    }
+
+    // Memeriksa jika mobil akan terjebak di belakang mobil
+    private Boolean stuckbehindplayer(Car playerme, Car playeropponent ){
+        if (playerme.position.block < playeropponent.position.block) {
+            return (playerme.position.lane == playeropponent.position.lane && (playerme.position.block + playerme.speed - playeropponent.position.block + playeropponent.speed) <= 0);
+        }
+        else{
+            return (playeropponent.position.block - 1 == playerme.position.block);
+        }
     }
 
 }
