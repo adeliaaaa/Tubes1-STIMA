@@ -4,7 +4,7 @@
   "game-engine-jar": "game-engine.jar",
   "verbose-mode": true,
   "max-runtime-ms": 1000,
-  "player-a": "./starter-bots/javascript",
+  "player-a": "./starter-bots/newbot",
   "player-b": "./reference-bot/java",
   "max-request-retries": 10,
   "request-timeout-ms": 5000,

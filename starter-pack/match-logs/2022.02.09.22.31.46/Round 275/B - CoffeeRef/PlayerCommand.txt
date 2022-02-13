@@ -1,0 +1,3 @@
+Command: ACCELERATE
+Execution time: 37ms
+Exception: null
