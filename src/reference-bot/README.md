@@ -1,1 +1,3 @@
-Reference bot for EC2020
+# Reference bot
+
+Reference bot angel coba buat dan ubah
