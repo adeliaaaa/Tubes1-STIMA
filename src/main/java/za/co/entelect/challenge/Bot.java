@@ -41,9 +41,9 @@ public class Bot {
     }
 
     public Command run() {
-        List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
         List<Object> nextLeft = null;
         List<Object> nextRight= null;
+        List<Object> nextBlock = getblockspeed(myCar, myCar.position.lane, myCar.position.block );
 
         if (myCar.position.lane < 4 ){
             nextRight = getblockspeed(myCar, myCar.position.lane+1,myCar.position.block);
@@ -51,7 +51,6 @@ public class Bot {
         if (myCar.position.lane > 1){
             nextLeft = getblockspeed( myCar, myCar.position.lane-1,myCar.position.block);
         }
-        List<Object> nextBlock = getblockspeed(myCar, myCar.position.lane, myCar.position.block );
 
         //Fix first if too damaged to move so speed can be consistent
         if(myCar.damage >= 3) {
@@ -67,7 +66,7 @@ public class Bot {
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
                 int rightObstacle = occurences(nextRight);
-                int laneObstacle = occurences(blocks);
+                int laneObstacle = occurences(nextBlock);
                 if (rightObstacle >= laneObstacle) {
                     return ACCELERATE;
                 }
@@ -78,7 +77,7 @@ public class Bot {
             else if (myCar.position.lane == 4) {
                 // gak boleh ke kanan;
                 int leftObstacle = occurences(nextLeft);
-                int laneObstacle = occurences(blocks);
+                int laneObstacle = occurences(nextBlock);
                 if (leftObstacle >= laneObstacle) {
                     return ACCELERATE;
                 }
@@ -96,7 +95,7 @@ public class Bot {
                 else {
                     int leftObstacle = occurences(nextLeft);
                     int rightObstacle = occurences(nextRight);
-                    int laneObstacle = occurences(blocks);
+                    int laneObstacle = occurences(nextBlock);
                     if (laneObstacle < leftObstacle && laneObstacle < rightObstacle) {
                         return ACCELERATE;
                     }
@@ -124,7 +123,7 @@ public class Bot {
 
         // menggunakan boost jika speed mobil player lebih kecil 5
 
-        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(blocks) == 0 && opponent.position.block > myCar.position.block) {
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(nextBlock) == 0 && opponent.position.block > myCar.position.block) {
             return BOOST;
         }
 
@@ -158,33 +157,13 @@ public class Bot {
             }
         }
 
-        if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && !(myCar.boosting)) {
             return BOOST;
         }
         
         return ACCELERATE;
     }
 
-    /**
-     * Returns map of blocks and the objects in the for the current lanes, returns the amount of blocks that can be
-     * traversed at max speed.
-     **/
-    private List<Object> getBlocksInFront(int lane, int block) {
-        List<Lane[]> map = gameState.lanes;
-        List<Object> blocks = new ArrayList<>();
-        int startBlock = map.get(0)[0].position.block;
-
-        Lane[] laneList = map.get(lane - 1);
-        for (int i = max(block - startBlock, 0); i <= block - startBlock + Bot.maxSpeed; i++) {
-            if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
-                break;
-            }
-
-            blocks.add(laneList[i].terrain);
-
-        }
-        return blocks;
-    }
     private List<Object> getblockspeed(Car player, int lane, int block) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
@@ -215,18 +194,20 @@ public class Bot {
         amountobstacle += Collections.frequency(obstacles, Terrain.MUD);
         amountobstacle += Collections.frequency(obstacles, Terrain.OIL_SPILL);
         amountobstacle += Collections.frequency(obstacles, Terrain.WALL) * 2;
-        amountobstacle += Collections.frequency(obstacles, Terrain.TRUCK) * 2;
+        amountobstacle += Collections.frequency(obstacles, Terrain.CYBERTRUCK) * 2;
         return amountobstacle;
     }
 
     // Memeriksa jika mobil akan terjebak di belakang mobil
     private Boolean stuckbehindplayer(Car playerme, Car playeropponent ){
         int myLane = playerme.position.lane;
+        int myBlock = playerme.position.block;
         int myNextBlock = playerme.position.block + playerme.speed;
         int oppLane = opponent.position.lane;
+        int oppBlock = opponent.position.block;
         int oppNextBlock = opponent.position.block + opponent.speed;
         if (myLane == oppLane) {
-            return (myNextBlock >= oppNextBlock);
+            return (myNextBlock >= oppNextBlock && myBlock < oppBlock);
         } 
         else {
             return false;
