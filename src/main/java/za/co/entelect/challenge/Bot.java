@@ -128,6 +128,7 @@ public class Bot {
             return BOOST;
         }
 
+        // batas aman kondisi mobil
 
         //menggunakan emp jika ada opponet didepan kita dan lane kanan kiri current player
         if ((opponent.position.lane - myCar.position.lane) >= -1 && (opponent.position.lane - myCar.position.lane) <= 1 && opponent.position.block > myCar.position.block){
@@ -139,14 +140,14 @@ public class Bot {
         if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
             Position truck_loc = new Position();
             truck_loc.lane = opponent.position.lane;
-            truck_loc.block = opponent.position.block + opponent.speed + 1;
+            truck_loc.block = opponent.position.block + opponent.speed;
             int next_round_block = myCar.position.block + myCar.speed;
             if (myCar.position.lane == truck_loc.lane && next_round_block <= truck_loc.block) {
                 // jangan tweet
                 return ACCELERATE;
             }
             else {
-                return new TweetCommand(truck_loc.lane , (truck_loc.block));
+                return new TweetCommand(truck_loc.lane , truck_loc.block);
             }
         }
 
@@ -155,6 +156,10 @@ public class Bot {
             if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
                 return OIL;
             }
+        }
+
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+            return BOOST;
         }
         
         return ACCELERATE;
@@ -209,7 +214,8 @@ public class Bot {
         int amountobstacle = 0;
         amountobstacle += Collections.frequency(obstacles, Terrain.MUD);
         amountobstacle += Collections.frequency(obstacles, Terrain.OIL_SPILL);
-        amountobstacle += Collections.frequency(obstacles, Terrain.WALL);
+        amountobstacle += Collections.frequency(obstacles, Terrain.WALL) * 2;
+        amountobstacle += Collections.frequency(obstacles, Terrain.TRUCK) * 2;
         return amountobstacle;
     }
 

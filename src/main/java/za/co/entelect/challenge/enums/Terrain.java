@@ -22,5 +22,7 @@ public enum Terrain {
     @SerializedName("8")
     TWEET,
     @SerializedName("9")
-    EMP
+    EMP,
+    @SerializedName("10")
+    TRUCK
 }
