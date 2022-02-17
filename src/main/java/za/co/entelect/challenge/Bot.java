@@ -42,31 +42,16 @@ public class Bot {
 
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
-        List<Object> leftBlocks;
-        List<Object> rightBlocks;
-        if (myCar.position.lane == 1) {
-            leftBlocks = null;
-            rightBlocks = getBlocksInFront(myCar.position.lane+1, myCar.position.block);
-        }
-        else if (myCar.position.lane == 4) {
-            leftBlocks = getBlocksInFront(myCar.position.lane-1, myCar.position.block);
-            rightBlocks = null;
-        }
-        else {
-            leftBlocks = getBlocksInFront(myCar.position.lane-1, myCar.position.block);
-            rightBlocks = getBlocksInFront(myCar.position.lane+1, myCar.position.block);
-        }
-
-        List<Object> nextBlock = blocks.subList(1,myCar.speed+1);
         List<Object> nextLeft = null;
-        List<Object> nextRight = null;
+        List<Object> nextRight= null;
 
-        if (leftBlocks != null) {
-            nextLeft = leftBlocks.subList(0,myCar.speed+1);
+        if (myCar.position.lane < 4 ){
+            nextRight = getblockspeed(myCar, myCar.position.lane+1,myCar.position.block);
         }
-        if (rightBlocks != null) {
-            nextRight = rightBlocks.subList(0,myCar.speed+1);
+        if (myCar.position.lane > 1){
+            nextLeft = getblockspeed( myCar, myCar.position.lane-1,myCar.position.block);
         }
+        List<Object> nextBlock = getblockspeed(myCar, myCar.position.lane, myCar.position.block );
 
         //Fix first if too damaged to move so speed can be consistent
         if(myCar.damage >= 3) {
@@ -74,7 +59,7 @@ public class Bot {
         }
 
         // ambil jalan yang tidak ada halangan
-        if (nextBlock.contains(Terrain.MUD) || nextBlock.contains(Terrain.OIL_SPILL) || nextBlock.contains(Terrain.WALL) || stuckbehindplayer(myCar, opponent)) {
+        if (occurences(nextBlock) > 0 || stuckbehindplayer(myCar, opponent)) {
             // Kalau punya lizard langsung dipakai
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
@@ -82,7 +67,7 @@ public class Bot {
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
                 int rightObstacle = occurences(nextRight);
-                int laneObstacle = occurences(nextBlock);
+                int laneObstacle = occurences(blocks);
                 if (rightObstacle >= laneObstacle) {
                     return ACCELERATE;
                 }
@@ -93,7 +78,7 @@ public class Bot {
             else if (myCar.position.lane == 4) {
                 // gak boleh ke kanan;
                 int leftObstacle = occurences(nextLeft);
-                int laneObstacle = occurences(nextBlock);
+                int laneObstacle = occurences(blocks);
                 if (leftObstacle >= laneObstacle) {
                     return ACCELERATE;
                 }
@@ -102,18 +87,18 @@ public class Bot {
                 }
             }
             else {
-                if (!(nextLeft.contains(Terrain.MUD) || nextLeft.contains(Terrain.OIL_SPILL) || nextLeft.contains(Terrain.WALL))) {
+                if (occurences(nextLeft) == 0) {
                     return TURN_LEFT;
                 }
-                else if (!(nextRight.contains(Terrain.MUD) || nextRight.contains(Terrain.OIL_SPILL) || nextRight.contains(Terrain.WALL))) {
+                else if (occurences(nextRight) == 0) {
                     return TURN_RIGHT;
                 }
                 else {
                     int leftObstacle = occurences(nextLeft);
                     int rightObstacle = occurences(nextRight);
-                    int laneObstacle = occurences(nextBlock);
+                    int laneObstacle = occurences(blocks);
                     if (laneObstacle < leftObstacle && laneObstacle < rightObstacle) {
-                        return NOTHING;
+                        return ACCELERATE;
                     }
                     else if (leftObstacle > rightObstacle) {
                         return TURN_RIGHT;
@@ -138,17 +123,15 @@ public class Bot {
         }
 
         // menggunakan boost jika speed mobil player lebih kecil 5
-        if (myCar.speed <= 5){
-            if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
-                return BOOST;
-            }
+
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(blocks) == 0 && opponent.position.block > myCar.position.block) {
+            return BOOST;
         }
 
-        // Batas aman kondisi damage dan speed myCar
 
-        //menggunakan emp jika ada opponet didepan kita dan lane yang sama
-        if (opponent.position.lane == myCar.position.lane && opponent.position.block > myCar.position.block){
-            if (hasPowerUp(PowerUps.EMP, myCar.powerups)) {
+        //menggunakan emp jika ada opponet didepan kita dan lane kanan kiri current player
+        if ((opponent.position.lane - myCar.position.lane) >= -1 && (opponent.position.lane - myCar.position.lane) <= 1 && opponent.position.block > myCar.position.block){
+            if (hasPowerUp(PowerUps.EMP, myCar.powerups) ) {
                 return EMP;
             }
         }
@@ -197,7 +180,21 @@ public class Bot {
         }
         return blocks;
     }
+    private List<Object> getblockspeed(Car player, int lane, int block) {
+        List<Lane[]> map = gameState.lanes;
+        List<Object> blocks = new ArrayList<>();
+        int startBlock = map.get(0)[0].position.block;
 
+        Lane[] laneList = map.get(lane - 1);
+        for (int i = max(block - startBlock, 0); i <=  block - startBlock + player.speed +1; i++) {
+            if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
+                break;
+            }
+            blocks.add(laneList[i].terrain);
+
+        }
+        return blocks;
+    }
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
         for (PowerUps powerUp: available) {
             if (powerUp.equals(powerUpToCheck)) {
@@ -212,6 +209,7 @@ public class Bot {
         int amountobstacle = 0;
         amountobstacle += Collections.frequency(obstacles, Terrain.MUD);
         amountobstacle += Collections.frequency(obstacles, Terrain.OIL_SPILL);
+        amountobstacle += Collections.frequency(obstacles, Terrain.WALL);
         return amountobstacle;
     }
 
