@@ -142,7 +142,7 @@ public class Bot {
             truck_loc.lane = opponent.position.lane;
             truck_loc.block = opponent.position.block + opponent.speed;
             int next_round_block = myCar.position.block + myCar.speed;
-            if (myCar.position.lane == truck_loc.lane && next_round_block <= truck_loc.block) {
+            if (myCar.position.lane == truck_loc.lane && next_round_block == truck_loc.block) {
                 // jangan tweet
                 return ACCELERATE;
             }
