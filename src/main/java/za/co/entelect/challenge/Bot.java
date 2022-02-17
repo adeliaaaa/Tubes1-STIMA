@@ -72,16 +72,6 @@ public class Bot {
         if(myCar.damage >= 3) {
             return FIX;
         }
-        
-        // jika stuck di belakang player lain
-        if (stuckbehindplayer(myCar, opponent)) {
-            if (hasPowerUp(PowerUps.EMP, myCar.powerups)) {
-                return EMP;
-            }
-            else if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
-                return LIZARD;
-            }
-        } 
 
         // ambil jalan yang tidak ada halangan
         if (nextBlock.contains(Terrain.MUD) || nextBlock.contains(Terrain.OIL_SPILL) || nextBlock.contains(Terrain.WALL) || stuckbehindplayer(myCar, opponent)) {
@@ -227,11 +217,15 @@ public class Bot {
 
     // Memeriksa jika mobil akan terjebak di belakang mobil
     private Boolean stuckbehindplayer(Car playerme, Car playeropponent ){
-        if (playerme.position.block < playeropponent.position.block) {
-            return (playerme.position.lane == playeropponent.position.lane && (playerme.position.block + playerme.speed - playeropponent.position.block + playeropponent.speed) <= 0);
-        }
-        else{
-            return (playerme.position.lane == playeropponent.position.lane && playeropponent.position.block - 1 == playerme.position.block);
+        int myLane = playerme.position.lane;
+        int myNextBlock = playerme.position.block + playerme.speed;
+        int oppLane = opponent.position.lane;
+        int oppNextBlock = opponent.position.block + opponent.speed;
+        if (myLane == oppLane) {
+            return (myNextBlock >= oppNextBlock);
+        } 
+        else {
+            return false;
         }
     }
 
