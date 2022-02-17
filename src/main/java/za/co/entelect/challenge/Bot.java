@@ -91,11 +91,26 @@ public class Bot {
             }
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
-                return TURN_RIGHT;
+                int rightObstacle = occurences(nextRight);
+                int laneObstacle = occurences(nextBlock);
+                if (rightObstacle >= laneObstacle) {
+                    return ACCELERATE;
+                }
+                else {
+                    return TURN_RIGHT;
+                }
             }
             else if (myCar.position.lane == 4) {
                 // gak boleh ke kanan;
-                return TURN_LEFT;
+                // gak boleh ke kiri
+                int leftObstacle = occurences(nextLeft);
+                int laneObstacle = occurences(nextBlock);
+                if (leftObstacle >= laneObstacle) {
+                    return ACCELERATE;
+                }
+                else {
+                    return TURN_LEFT;
+                }
             }
             else {
                 if (!(nextLeft.contains(Terrain.MUD) || nextLeft.contains(Terrain.OIL_SPILL) || nextLeft.contains(Terrain.WALL))) {
@@ -150,7 +165,17 @@ public class Bot {
         }
 
         if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
-            return new TweetCommand(opponent.position.lane , (opponent.position.block + opponent.speed+1));
+            Position truck_loc = new Position();
+            truck_loc.lane = opponent.position.lane;
+            truck_loc.block = opponent.position.block + opponent.speed + 1;
+            int next_round_block = myCar.position.block + myCar.speed;
+            if (myCar.position.lane == truck_loc.lane && next_round_block <= truck_loc.block) {
+                // jangan tweet
+                return ACCELERATE;
+            }
+            else {
+                return new TweetCommand(truck_loc.lane , (truck_loc.block));
+            }
         }
 
         //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
