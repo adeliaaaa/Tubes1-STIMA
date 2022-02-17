@@ -102,7 +102,6 @@ public class Bot {
             }
             else if (myCar.position.lane == 4) {
                 // gak boleh ke kanan;
-                // gak boleh ke kiri
                 int leftObstacle = occurences(nextLeft);
                 int laneObstacle = occurences(nextBlock);
                 if (leftObstacle >= laneObstacle) {
@@ -232,7 +231,7 @@ public class Bot {
             return (playerme.position.lane == playeropponent.position.lane && (playerme.position.block + playerme.speed - playeropponent.position.block + playeropponent.speed) <= 0);
         }
         else{
-            return (playeropponent.position.block - 1 == playerme.position.block);
+            return (playerme.position.lane == playeropponent.position.lane && playeropponent.position.block - 1 == playerme.position.block);
         }
     }
 
