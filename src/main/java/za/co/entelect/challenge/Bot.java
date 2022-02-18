@@ -54,7 +54,7 @@ public class Bot {
         }
 
         //Fix first if too damaged to move so speed can be consistent
-        if(myCar.damage >= 3) {
+        if(myCar.damage > 0) { //trying to be more greedy
             return FIX;
         }
 
@@ -160,7 +160,7 @@ public class Bot {
 
         // menggunakan boost jika speed mobil player lebih kecil 5
 
-        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(nextBlock,cyberTruckHere) == 0 && opponent.position.block > myCar.position.block) {
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(nextBlock,cyberTruckHere) == 0 && opponent.position.block > myCar.position.block && !(myCar.boosting)) {
             return BOOST;
         }
 
@@ -188,8 +188,8 @@ public class Bot {
         }
 
         //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
-        if (opponent.position.lane == myCar.position.lane && myCar.position.block  - opponent.position.block <= 3 && myCar.position.block > opponent.position.block){
-            if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
+        if (hasPowerUp(PowerUps.OIL, myCar.powerups) && opponent.position.block < myCar.position.block) {
+            if (opponent.position.lane == myCar.position.lane && (myCar.position.block  - opponent.position.block <= 3 || opponent.position.block + opponent.speed >= myCar.position.block || occurences(nextBlock, cybertruckHere) == 0){
                 return OIL;
             }
         }
