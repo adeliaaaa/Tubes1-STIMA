@@ -61,13 +61,15 @@ public class Bot {
         // ambil jalan yang tidak ada halangan
         if (occurences(nextBlock,cyberTruckHere) > 0 || stuckbehindplayer(myCar, opponent)) {
             // Kalau punya lizard langsung dipakai
-            if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
-                return LIZARD;
-            }
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
                 int rightObstacle = occurences(nextRight,cyberTruckHere);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
+                if (rightObstacle != 0 && laneObstacle != 0){
+                    if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                        return LIZARD;
+                    }
+                }
                 if (rightObstacle > laneObstacle) {
                     return ACCELERATE;
                 }
@@ -90,6 +92,11 @@ public class Bot {
                 // gak boleh ke kanan;
                 int leftObstacle = occurences(nextLeft,cyberTruckHere);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
+                if (leftObstacle != 0 && laneObstacle != 0){
+                    if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                        return LIZARD;
+                    }
+                }
                 if (leftObstacle > laneObstacle) {
                     return ACCELERATE;
                 }
@@ -122,6 +129,11 @@ public class Bot {
                     int lanePowerUps = countPowerUps(nextBlock);
                     int rightPowerUps = countPowerUps(nextRight);
                     int leftPowerUps = countPowerUps(nextLeft);
+                    if (laneObstacle != 0 && leftObstacle != 0 && rightObstacle != 0){
+                        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+                            return LIZARD;
+                        }    
+                    }
                     if (laneObstacle < leftObstacle && laneObstacle < rightObstacle) {
                         return ACCELERATE;
                     }
