@@ -41,16 +41,19 @@ public class Bot {
     }
 
     public Command run() {
-        int cyberTruckHere = isThereCyberTruck(myCar);
+        int cyberTruckHere = isThereCyberTruck(myCar,myCar.position.lane);
+        int cyberTruckRight = 0;
+        int cyberTruckLeft = 0;
         List<Object> nextLeft = null;
         List<Object> nextRight= null;
         List<Object> nextBlock = getblockspeed(myCar, myCar.position.lane, myCar.position.block );
-
         if (myCar.position.lane < 4 ){
             nextRight = getblockspeed(myCar, myCar.position.lane+1,myCar.position.block);
+            cyberTruckRight = isThereCyberTruck(myCar, myCar.position.lane+1);
         }
         if (myCar.position.lane > 1){
             nextLeft = getblockspeed( myCar, myCar.position.lane-1,myCar.position.block);
+            cyberTruckLeft = isThereCyberTruck(myCar, myCar.position.lane-1);
         }
 
         //Fix first if too damaged to move so speed can be consistent
@@ -63,7 +66,7 @@ public class Bot {
             // Kalau punya lizard langsung dipakai
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
-                int rightObstacle = occurences(nextRight,cyberTruckHere);
+                int rightObstacle = occurences(nextRight,cyberTruckRight);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
                 if (rightObstacle != 0 && laneObstacle != 0){
                     if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
@@ -90,7 +93,7 @@ public class Bot {
             }
             else if (myCar.position.lane == 4) {
                 // gak boleh ke kanan;
-                int leftObstacle = occurences(nextLeft,cyberTruckHere);
+                int leftObstacle = occurences(nextLeft,cyberTruckLeft);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
                 if (leftObstacle != 0 && laneObstacle != 0){
                     if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
@@ -116,15 +119,15 @@ public class Bot {
                 }
             }
             else {
-                if (occurences(nextLeft,cyberTruckHere) == 0) {
+                if (occurences(nextLeft,cyberTruckLeft) == 0) {
                     return TURN_LEFT;
                 }
-                else if (occurences(nextRight,cyberTruckHere) == 0) {
+                else if (occurences(nextRight,cyberTruckRight) == 0) {
                     return TURN_RIGHT;
                 }
                 else {
-                    int leftObstacle = occurences(nextLeft,cyberTruckHere);
-                    int rightObstacle = occurences(nextRight,cyberTruckHere);
+                    int leftObstacle = occurences(nextLeft,cyberTruckLeft);
+                    int rightObstacle = occurences(nextRight,cyberTruckRight);
                     int laneObstacle = occurences(nextBlock,cyberTruckHere);
                     int lanePowerUps = countPowerUps(nextBlock);
                     int rightPowerUps = countPowerUps(nextRight);
@@ -189,7 +192,7 @@ public class Bot {
 
         //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
         if (hasPowerUp(PowerUps.OIL, myCar.powerups) && opponent.position.block < myCar.position.block) {
-            if (opponent.position.lane == myCar.position.lane && (myCar.position.block  - opponent.position.block <= 3 || opponent.position.block + opponent.speed >= myCar.position.block || occurences(nextBlock, cyberTruckHere) == 0)){
+            if ((opponent.position.lane == myCar.position.lane && (myCar.position.block  - opponent.position.block <= 3)) || (opponent.position.block + opponent.speed >= myCar.position.block && occurences(nextBlock, cyberTruckHere) == 0)){
                 return OIL;
             }
         }
@@ -200,11 +203,11 @@ public class Bot {
         
         return ACCELERATE;
     }
-    private int isThereCyberTruck(Car player) {
+    // mengembalikan jumlah cybertruck pada lane tertentu
+    private int isThereCyberTruck(Car player, int lane) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
         int startBlock = map.get(0)[0].position.block;
-        int lane = player.position.lane;
         int block = player.position.block;
         int howmany = 0;
         Lane[] laneList = map.get(lane - 1);
@@ -216,6 +219,7 @@ public class Bot {
         }
         return howmany;
     }
+    // mengembalikan list yang berisi terrain map dari position pemain sampai ke speed pemain + 1
     private List<Object> getblockspeed(Car player, int lane, int block) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
@@ -231,6 +235,7 @@ public class Bot {
         }
         return blocks;
     }
+    // mengembalikan true jika memiliki powerup yang diperiksa
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
         for (PowerUps powerUp: available) {
             if (powerUp.equals(powerUpToCheck)) {
@@ -266,9 +271,9 @@ public class Bot {
         int myLane = playerme.position.lane;
         int myBlock = playerme.position.block;
         int myNextBlock = playerme.position.block + playerme.speed;
-        int oppLane = opponent.position.lane;
-        int oppBlock = opponent.position.block;
-        int oppNextBlock = opponent.position.block + opponent.speed;
+        int oppLane = playeropponent.position.lane;
+        int oppBlock = playeropponent.position.block;
+        int oppNextBlock = playeropponent.position.block + playeropponent.speed;
         if (myLane == oppLane) {
             return (myNextBlock >= oppNextBlock && myBlock < oppBlock);
         } 
