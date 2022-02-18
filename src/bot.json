@@ -2,7 +2,7 @@
 	"author": "John Doe",
 	"email": "John.Doe@example.com",
 	"nickName": "Bandiscoot Cram",
-	"botLocation": "/target",
+	"botLocation": "/bin",
 	"botFileName": "BandiscootCram.jar",
 	"botLanguage": "java"
 }
