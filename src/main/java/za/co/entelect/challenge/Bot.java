@@ -202,7 +202,7 @@ public class Bot {
         // Memberikan damage pada player musuh sebesar mungkin
         //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
         if (hasPowerUp(PowerUps.OIL, myCar.powerups) && opponent.position.block < myCar.position.block) {
-            if ((opponent.position.lane == myCar.position.lane && (myCar.position.block  - opponent.position.block <= 3)) || (opponent.position.block + opponent.speed >= myCar.position.block && occurences(nextBlock, cyberTruckHere) == 0)){
+            if (opponent.position.lane == myCar.position.lane && ((myCar.position.block  - opponent.position.block <= 3) || (opponent.position.block + opponent.speed >= myCar.position.block) || (occurences(nextBlock, cyberTruckHere) == 0))){
                 return OIL;
             }
         }
