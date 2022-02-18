@@ -3,6 +3,6 @@
 	"email": "John.Doe@example.com",
 	"nickName": "Bandiscoot Cram",
 	"botLocation": "/target",
-	"botFileName": "bandiscoot-jar-with-dependencies.jar",
+	"botFileName": "BandiscootCram.jar",
 	"botLanguage": "java"
 }

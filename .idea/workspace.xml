@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a45a3a56-25ad-4c30-a9b5-4ad90c83ed29" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/Bot.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/AccelerateCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/BoostCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/ChangeLaneCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/Command.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/DecelerateCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/DoNothingCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/EmpCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/FixCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/LizardCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/OilCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/command/TweetCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/entities/Car.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/entities/GameState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/entities/Lane.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/entities/Position.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/enums/Direction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/enums/PowerUps.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/enums/State.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/za/co/entelect/challenge/enums/Terrain.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="253QXLpR0HzibiBD5tLQmuXawhd" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a45a3a56-25ad-4c30-a9b5-4ad90c83ed29" name="Changes" comment="" />
+      <created>1644753332800</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1644753332800</updated>
+    </task>
+    <servers />
+  </component>
+</project>
