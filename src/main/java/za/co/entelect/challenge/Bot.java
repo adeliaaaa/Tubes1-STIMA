@@ -165,7 +165,7 @@ public class Bot {
 
         // menyelamatkan speed dulu
         if (myCar.speed < 6) {
-            if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+            if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && !(myCar.boosting)) {
                 return BOOST;
             }
             else {
