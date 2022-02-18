@@ -68,8 +68,19 @@ public class Bot {
                 // gak boleh ke kiri
                 int rightObstacle = occurences(nextRight,cyberTruckHere);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
-                if (rightObstacle >= laneObstacle) {
+                if (rightObstacle > laneObstacle) {
                     return ACCELERATE;
+                }
+                else if (rightObstacle == laneObstacle) {
+                    // hitung mana yang punya lebih banyak powerups
+                    int lanePowerUps = countPowerUps(nextBlock);
+                    int rightPowerUps = countPowerUps(nextRight);
+                    if (lanePowerUps >= rightPowerUps) {
+                        return ACCELERATE;
+                    }
+                    else {
+                        return TURN_RIGHT;
+                    }
                 }
                 else {
                     return TURN_RIGHT;
@@ -79,8 +90,19 @@ public class Bot {
                 // gak boleh ke kanan;
                 int leftObstacle = occurences(nextLeft,cyberTruckHere);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
-                if (leftObstacle >= laneObstacle) {
+                if (leftObstacle > laneObstacle) {
                     return ACCELERATE;
+                }
+                else if (leftObstacle == laneObstacle) {
+                    // hitung mana yang punya lebih banyak powerups
+                    int lanePowerUps = countPowerUps(nextBlock);
+                    int leftPowerUps = countPowerUps(nextLeft);
+                    if (lanePowerUps >= leftPowerUps) {
+                        return ACCELERATE;
+                    }
+                    else {
+                        return TURN_LEFT;
+                    }
                 }
                 else {
                     return TURN_LEFT;
@@ -97,6 +119,9 @@ public class Bot {
                     int leftObstacle = occurences(nextLeft,cyberTruckHere);
                     int rightObstacle = occurences(nextRight,cyberTruckHere);
                     int laneObstacle = occurences(nextBlock,cyberTruckHere);
+                    int lanePowerUps = countPowerUps(nextBlock);
+                    int rightPowerUps = countPowerUps(nextRight);
+                    int leftPowerUps = countPowerUps(nextLeft);
                     if (laneObstacle < leftObstacle && laneObstacle < rightObstacle) {
                         return ACCELERATE;
                     }
@@ -107,11 +132,10 @@ public class Bot {
                         return TURN_LEFT;
                     }
                     else {
-                        Random num = new Random();
-                        int low = 0;
-                        int high = 1;
-                        int res = num.nextInt(high-low) + low;
-                        if (res == 0) {
+                        if (lanePowerUps >= rightPowerUps && lanePowerUps >= leftPowerUps) {
+                            return ACCELERATE;
+                        }
+                        else if (leftPowerUps > rightPowerUps) {
                             return TURN_LEFT;
                         }
                         else {
@@ -212,6 +236,17 @@ public class Bot {
         amountobstacle += Collections.frequency(obstacles, Terrain.WALL) * 2;
         amountobstacle += cybertruck*2;
         return amountobstacle;
+    }
+
+    // mengembalikan banyaknya power up tiap lane block yang bisa dilewati
+    private int countPowerUps(List lane){
+        int amount = 0;
+        amount += Collections.frequency(lane, PowerUps.BOOST);
+        amount += Collections.frequency(lane, PowerUps.OIL);
+        amount += Collections.frequency(lane, PowerUps.TWEET);
+        amount += Collections.frequency(lane, PowerUps.LIZARD);
+        amount += Collections.frequency(lane, PowerUps.EMP);
+        return amount;
     }
 
     // Memeriksa jika mobil akan terjebak di belakang mobil
