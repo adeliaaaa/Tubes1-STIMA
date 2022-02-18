@@ -163,10 +163,14 @@ public class Bot {
             }
         }
 
-        // Meminimalisir dampak damage
-        // Menggunakan boost jika speed mobil player lebih kecil 5
-        if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(nextBlock,cyberTruckHere) == 0 && opponent.position.block > myCar.position.block && !(myCar.boosting)) {
-            return BOOST;
+        // menyelamatkan speed dulu
+        if (myCar.speed < 6) {
+            if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
+                return BOOST;
+            }
+            else {
+                return ACCELERATE;
+            }
         }
 
         // Batas aman kondisi mobil
@@ -203,6 +207,7 @@ public class Bot {
             }
         }
 
+        // minimalisir damage
         if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && !(myCar.boosting)) {
             return BOOST;
         }
@@ -277,7 +282,17 @@ public class Bot {
     private Boolean stuckbehindplayer(Car playerme, Car playeropponent ){
         int myLane = playerme.position.lane;
         int myBlock = playerme.position.block;
-        int myNextBlock = playerme.position.block + 9;
+        int maxSpeed;
+        if (playerme.speed <= 3) {
+            maxSpeed = 6;
+        }
+        else if (playerme.speed <= 6) {
+            maxSpeed = 9;
+        }
+        else {
+            maxSpeed = 15;
+        }
+        int myNextBlock = playerme.position.block + maxSpeed;
         int oppLane = playeropponent.position.lane;
         int oppBlock = playeropponent.position.block;
         int oppNextBlock = playeropponent.position.block + playeropponent.speed;
