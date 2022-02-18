@@ -56,14 +56,17 @@ public class Bot {
             cyberTruckLeft = isThereCyberTruck(myCar, myCar.position.lane-1);
         }
 
+        //Greedy by Damage
+
+        //Meminimalisir damage yang diterima
         //Fix first if too damaged to move so speed can be consistent
-        if(myCar.damage > 0) { //trying to be more greedy
+        if(myCar.damage > 0) {
             return FIX;
         }
 
+        // Meminimalisir damage yang diterima
         // ambil jalan yang tidak ada halangan
         if (occurences(nextBlock,cyberTruckHere) > 0 || stuckbehindplayer(myCar, opponent)) {
-            // Kalau punya lizard langsung dipakai
             if (myCar.position.lane == 1) {
                 // gak boleh ke kiri
                 int rightObstacle = occurences(nextRight,cyberTruckRight);
@@ -92,7 +95,7 @@ public class Bot {
                 }
             }
             else if (myCar.position.lane == 4) {
-                // gak boleh ke kanan;
+                // gak boleh ke kanan
                 int leftObstacle = occurences(nextLeft,cyberTruckLeft);
                 int laneObstacle = occurences(nextBlock,cyberTruckHere);
                 if (leftObstacle != 0 && laneObstacle != 0){
@@ -161,21 +164,24 @@ public class Bot {
             }
         }
 
-        // menggunakan boost jika speed mobil player lebih kecil 5
-
+        // Meminimalisir dampak damage
+        // Menggunakan boost jika speed mobil player lebih kecil 5
         if (hasPowerUp(PowerUps.BOOST, myCar.powerups) && occurences(nextBlock,cyberTruckHere) == 0 && opponent.position.block > myCar.position.block && !(myCar.boosting)) {
             return BOOST;
         }
 
-        // batas aman kondisi mobil
+        // Batas aman kondisi mobil
 
+        // Memberikan damage pada player musuh sebesar mungkin
         //menggunakan emp jika ada opponet didepan kita dan lane kanan kiri current player
         if ((opponent.position.lane - myCar.position.lane) >= -1 && (opponent.position.lane - myCar.position.lane) <= 1 && opponent.position.block > myCar.position.block){
             if (hasPowerUp(PowerUps.EMP, myCar.powerups) ) {
                 return EMP;
             }
         }
-
+        
+        // Memberikan damage pada player musuh sebesar mungkin
+        // Menggunakan twett
         if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
             Position truck_loc = new Position();
             truck_loc.lane = opponent.position.lane;
@@ -189,7 +195,8 @@ public class Bot {
                 return new TweetCommand(truck_loc.lane , truck_loc.block);
             }
         }
-
+        
+        // Memberikan damage pada player musuh sebesar mungkin
         //menggunakan oil jika ada opponent di belakang kita sejauh 3/2/1 blocks dari player
         if (hasPowerUp(PowerUps.OIL, myCar.powerups) && opponent.position.block < myCar.position.block) {
             if ((opponent.position.lane == myCar.position.lane && (myCar.position.block  - opponent.position.block <= 3)) || (opponent.position.block + opponent.speed >= myCar.position.block && occurences(nextBlock, cyberTruckHere) == 0)){
@@ -203,6 +210,7 @@ public class Bot {
         
         return ACCELERATE;
     }
+    
     // mengembalikan jumlah cybertruck pada lane tertentu
     private int isThereCyberTruck(Car player, int lane) {
         List<Lane[]> map = gameState.lanes;
