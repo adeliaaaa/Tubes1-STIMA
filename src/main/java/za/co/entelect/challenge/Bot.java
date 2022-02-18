@@ -11,7 +11,6 @@ import static java.lang.Math.max;
 
 public class Bot {
 
-    private static final int maxSpeed = 9;
     private List<Integer> directionList = new ArrayList<>();
 
     private Random random;
@@ -60,7 +59,7 @@ public class Bot {
 
         //Meminimalisir damage yang diterima
         //Fix first if too damaged to move so speed can be consistent
-        if(myCar.damage > 0) {
+        if(myCar.damage > 1) {
             return FIX;
         }
 
@@ -278,7 +277,7 @@ public class Bot {
     private Boolean stuckbehindplayer(Car playerme, Car playeropponent ){
         int myLane = playerme.position.lane;
         int myBlock = playerme.position.block;
-        int myNextBlock = playerme.position.block + playerme.speed;
+        int myNextBlock = playerme.position.block + 9;
         int oppLane = playeropponent.position.lane;
         int oppBlock = playeropponent.position.block;
         int oppNextBlock = playeropponent.position.block + playeropponent.speed;
